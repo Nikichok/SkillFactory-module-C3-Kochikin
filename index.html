@@ -1,0 +1,59 @@
+<!doctype html>
+<textarea style="width:200px; height: 20px;" id="area" placeholder="Введите название города"></textarea>
+<br>
+<button onclick="localStorage.removeItem('area');area.value=''">Очистить</button>
+<br>
+<br>
+<form id = "areaCheck"> 
+	<h3 id = "prompt">Пожалуйста отметьте и сохраните настройки ниже (в последствии их нельзя будет изменить):</h3>
+	<p><input type="checkbox" name="noCall"> не звонить мне;</p>
+	<p><input type="checkbox" name="myConsent"> я прочитал и согласен с правилами пользования сервисом;</p>
+	<p><input type="checkbox" name="myChoice"> я не выбираю эту галочку;</p>
+	<p><input type="checkbox" name="myFreedom"> я подтверждаю, что свобода в интернете — это возможность выбирать галочки;</p>
+	<p><input type="checkbox" name="myTwelve"> мне больше 12 лет;</p>
+	<p><input type="checkbox" name="myTruth"> это задание выполнено правильно;</p>
+
+	<p><input type="submit" value="Сохранить"></p>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+	if (localStorage.getItem('area')) {
+	 	area.value = "Ваш город - " + localStorage.getItem('area');
+	};
+	area.oninput = () => {
+	  localStorage.setItem('area', area.value)
+	};
+
+	areaCheck.addEventListener('submit', function(e) {
+	e.preventDefault();	//Чтобы форма не отправлялась
+	if (localStorage.getItem('areaCheck') === null) {	//Проверяем наличие сохраненного выбора
+		localStorage.setItem('areaCheck',JSON.stringify($('#areaCheck').serializeArray()));
+		document.querySelectorAll('form input').forEach(elem => elem.setAttribute("disabled", "disabled"));	//Блокируем выбор
+
+		document.getElementById('prompt').innerHTML = "Ваш выбор:";
+
+		let div = document.createElement('div');
+		div.className = "alert";
+		div.innerHTML = "<strong>Важно!</strong> Чтобы сбросить в исходное состояние, введите в консоли команду <strong>localStorage.removeItem('areaCheck');</strong>";
+
+		document.body.append(div);	//Выводим предупреждения
+	};
+	});
+
+	$(document).ready(function() {
+		if (localStorage.getItem('areaCheck')) {	//Проверяем наличие сохраненного выбора
+			chkd = JSON.parse(localStorage.getItem('areaCheck'));
+	    for (i = 0; i < chkd.length; i++) {
+	      document.getElementsByName(chkd[i].name)[0].setAttribute('checked', 'checked'); // чекаем "соответствующие id"
+	      }
+		    
+	      document.getElementById('prompt').innerHTML = "Ваш выбор:";
+	      
+		    document.querySelectorAll('form input').forEach(elem => elem.setAttribute("disabled", "disabled"));	//Блокируем выбор
+			};
+		});
+//	
+</script>
+
+
